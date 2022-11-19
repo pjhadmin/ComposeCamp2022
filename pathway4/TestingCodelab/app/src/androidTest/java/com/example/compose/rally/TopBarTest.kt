@@ -1,5 +1,9 @@
 package com.example.compose.rally
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasParent
@@ -57,5 +61,30 @@ class TopBarTest {
         composeTestRule
             .onNodeWithContentDescription(RallyScreen.Accounts.name)
             .assertExists()
+    }
+
+    @Test
+    fun rallyTopAppBarTest_changedOtherTab() {
+        val allScreens = RallyScreen.values().toList()
+        var selectedState by mutableStateOf(RallyScreen.Accounts)
+
+        composeTestRule.setContent {
+            RallyTopAppBar(
+                allScreens = allScreens,
+                onTabSelected = { },
+                currentScreen = selectedState
+            )
+        }
+
+        composeTestRule
+            .onNodeWithContentDescription(RallyScreen.Accounts.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+            .assertIsSelected()
+
+        selectedState = RallyScreen.Bills
+        composeTestRule
+            .onNodeWithContentDescription(RallyScreen.Bills.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+            .assertIsSelected()
     }
 }
